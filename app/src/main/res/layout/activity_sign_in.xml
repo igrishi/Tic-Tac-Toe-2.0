@@ -4,8 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#444444"
     tools:context=".Signin">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:fontFamily="@font/baumans"
+        android:text="Tic-Tac-Toe 2.0"
+        android:textColor="#fff"
+        android:textSize="30sp" />
     <com.google.android.gms.common.SignInButton
         android:id="@+id/signin"
         android:layout_width="wrap_content"

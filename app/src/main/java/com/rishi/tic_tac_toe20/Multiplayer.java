@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -33,6 +34,8 @@ public class Multiplayer extends AppCompatActivity {
     private String room_key;
     private Dialog create_room_dialog;
     private boolean flag=false;
+    private static ListenerRegistration registration;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,7 +168,8 @@ public class Multiplayer extends AppCompatActivity {
     private void check_join(){
        Log.d(TAG, "check_join: "+room_key);
        FirebaseFirestore firestore=FirebaseFirestore.getInstance();
-       firestore.collection("roomkey").document(room_key).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        registration=firestore.collection("roomkey").document(room_key)
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
            @Override
            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
@@ -186,6 +190,8 @@ public class Multiplayer extends AppCompatActivity {
                        Intent intent=new Intent(Multiplayer.this,M_game.class);
                        intent.putExtra("user_2",user_2);
                        intent.putExtra("roomkey",room_key);
+                       registration.remove();
+                       Log.d(TAG, "onEvent: "+"listener removed");
                        startActivity(intent);
                        finish();
                    }else{

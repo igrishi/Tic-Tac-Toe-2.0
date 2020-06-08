@@ -1,5 +1,6 @@
 package com.rishi.tic_tac_toe20;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,16 +28,19 @@ import javax.annotation.Nullable;
 public class M_game extends AppCompatActivity {
 
     private ImageView o_o, o_1, o_2, f_o, f_1, f_2, s_o, s_1, s_2;
+    private int[][] data;
     private FirebaseFirestore firebasefirestore;
     private String player = "1";
     private String roomkey;
     private static final String TAG = "M_game";
+    private boolean win=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_m_game);
         Intent intent = getIntent();
+        data=new int[3][3];;
         firebasefirestore = FirebaseFirestore.getInstance();
         String user_2 = intent.getStringExtra("user_2");
         if (user_2.equals(User.getName())) {
@@ -172,6 +176,11 @@ public class M_game extends AppCompatActivity {
                                     String pos = document.getString("position");
                                     update_UI(plya, pos);
                                 }
+                                if(doc.getType()== DocumentChange.Type.REMOVED){
+                                    Intent intent=new Intent(M_game.this,Multiplayer.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
                             }
                         }
                     }
@@ -184,63 +193,148 @@ public class M_game extends AppCompatActivity {
             switch (position) {
                 case "o_o":
                     o_o.setImageResource(R.drawable.x);
+                    data[0][0]=1;
                     break;
                 case "o_1":
                     o_1.setImageResource(R.drawable.x);
+                    data[0][1]=1;
                     break;
                 case "o_2":
                     o_2.setImageResource(R.drawable.x);
+                    data[0][2]=1;
                     break;
                 case "f_o":
                     f_o.setImageResource(R.drawable.x);
+                    data[1][0]=1;
                     break;
                 case "f_1":
                     f_1.setImageResource(R.drawable.x);
+                    data[1][1]=1;
                     break;
                 case "f_2":
                     f_2.setImageResource(R.drawable.x);
+                    data[1][2]=1;
                     break;
                 case "s_o":
                     s_o.setImageResource(R.drawable.x);
+                    data[2][0]=1;
                     break;
                 case "s_1":
                     s_1.setImageResource(R.drawable.x);
+                    data[2][1]=1;
                     break;
                 case "s_2":
                     s_2.setImageResource(R.drawable.x);
+                    data[2][2]=1;
                     break;
             }
-        } else {
+            player_win();
+        }
+        else {
             switch (position) {
                 case "o_o":
                     o_o.setImageResource(R.drawable.zero);
+                    data[0][0]=2;
                     break;
                 case "o_1":
                     o_1.setImageResource(R.drawable.zero);
+                    data[0][1]=2;
                     break;
                 case "o_2":
                     o_2.setImageResource(R.drawable.zero);
+                    data[0][2]=2;
                     break;
                 case "f_o":
                     f_o.setImageResource(R.drawable.zero);
+                    data[1][0]=2;
                     break;
                 case "f_1":
                     f_1.setImageResource(R.drawable.zero);
+                    data[1][1]=2;
                     break;
                 case "f_2":
                     f_2.setImageResource(R.drawable.zero);
+                    data[1][2]=2;
                     break;
                 case "s_o":
                     s_o.setImageResource(R.drawable.zero);
+                    data[2][0]=2;
                     break;
                 case "s_1":
                     s_1.setImageResource(R.drawable.zero);
+                    data[2][1]=2;
                     break;
                 case "s_2":
                     s_2.setImageResource(R.drawable.zero);
+                    data[2][2]=2;
                     break;
             }
+            player_win();
         }
     }
 
+    void player_win(){
+        if((data[0][0]==1&&data[0][1]==1&&data[0][2]==1)
+                           ||(data[0][0]==2&&data[0][1]==2&&data[0][2]==2)){
+            int p=data[0][0];
+            Log.d(TAG, "player_win: "+p);
+            Win_Dialog();
+        }
+        else if((data[1][0]==1&&data[1][1]==1&&data[1][2]==1)
+                ||(data[1][0]==2&&data[1][1]==2&&data[1][2]==2)){
+            int p=data[1][0];
+            Log.d(TAG, "player_win: "+p);
+            Win_Dialog();
+        }
+        else if((data[2][0]==1&&data[2][1]==1&&data[2][2]==1)
+                ||(data[2][0]==2&&data[2][1]==2&&data[2][2]==2)){
+            int p=data[2][0];
+            Log.d(TAG, "player_win: "+p);
+            Win_Dialog();
+        }
+        else if((data[0][0]==1&&data[1][0]==1&&data[2][0]==1)
+                ||(data[0][0]==2&&data[1][0]==2&&data[2][0]==2)){
+            int p=data[0][0];
+            Log.d(TAG, "player_win: "+p);
+            Win_Dialog();
+        }
+        else if((data[0][1]==1&&data[1][1]==1&&data[2][1]==1)
+                ||(data[0][1]==2&&data[1][1]==2&&data[2][1]==2)){
+            int p=data[0][1];
+            Log.d(TAG, "player_win: "+p);
+            Win_Dialog();
+        }
+        else if((data[0][2]==1&&data[1][2]==1&&data[2][2]==1)
+                ||(data[0][2]==2&&data[1][2]==2&&data[2][2]==2)){
+            int p=data[0][0];
+            Log.d(TAG, "player_win: "+p);
+            Win_Dialog();
+        }
+        else if((data[0][0]==1&&data[1][1]==1&&data[2][2]==1)
+                ||(data[0][0]==2&&data[1][1]==2&&data[2][2]==2)){
+            int p=data[0][0];
+            Log.d(TAG, "player_win: "+p);
+            Win_Dialog();
+        }
+        else if((data[0][2]==1&&data[1][1]==1&&data[2][0]==1)
+                ||(data[0][2]==2&&data[1][1]==2&&data[2][0]==2)){
+            int p=data[0][2];
+            Log.d(TAG, "player_win: "+p);
+            Win_Dialog();
+        }
+    }
+
+    void Win_Dialog(){
+        if(win){
+        Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.win_dialog);
+        dialog.show();
+        win=false;
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        firebasefirestore.collection("roomkey").document(roomkey).delete();
+    }
 }

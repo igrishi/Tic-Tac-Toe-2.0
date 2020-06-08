@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/l1_j"
             android:fontFamily="@font/baumans"
-            android:text="Room Joined!!"
+            android:text="You Won!! "
             android:textColor="#5717AF"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"

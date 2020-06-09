@@ -52,7 +52,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/text3"
+            android:id="@+id/text5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/l1_j"
@@ -65,11 +65,12 @@
             />
 
         <ImageView
+            android:id="@+id/wind_image"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/joined"
-            android:layout_below="@id/text3"/>
+            android:src="@drawable/win"
+            android:layout_below="@id/text5"/>
 
     </RelativeLayout>
 

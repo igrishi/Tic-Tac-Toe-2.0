@@ -20,8 +20,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.annotation.Nullable;
@@ -36,11 +38,13 @@ public class M_game extends AppCompatActivity {
     private static final String TAG = "M_game";
     private boolean win = true;
     private String user_2;
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_m_game);
+        dialog=new Dialog(this);
         Intent intent = getIntent();
         data = new int[3][3];
         ;
@@ -180,10 +184,14 @@ public class M_game extends AppCompatActivity {
                                     String pos = document.getString("position");
                                     update_UI(plya, pos);
                                 }
-                                if (doc.getType() == DocumentChange.Type.REMOVED) {
-                                    Intent intent = new Intent(M_game.this, Multiplayer.class);
-                                    startActivity(intent);
-                                    finish();
+                                if(doc.getType()== DocumentChange.Type.REMOVED){
+                                    dialog.dismiss();
+                                    for(int i=0;i<3;++i){
+                                        for(int j=0;j<3;++j){
+                                            data[i][j]=0;
+                                        }
+                                    }
+                                    reset_UI();
                                 }
                             }
                         }
@@ -323,6 +331,7 @@ public class M_game extends AppCompatActivity {
 
     void Win_Dialog(int p) {
         if (win) {
+            win = false;
             int winnner=Integer.parseInt(player);
             String result;
             if(p==winnner){
@@ -331,25 +340,82 @@ public class M_game extends AppCompatActivity {
             else{
                 result="you lose";
             }
-            Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.win_dialog);
             TextView text5=dialog.findViewById(R.id.text5);
             ImageView image=dialog.findViewById(R.id.wind_image);
+            final TextView restart=dialog.findViewById(R.id.restart_wd);
+            TextView leave_r=dialog.findViewById(R.id.leave_wd);
             if(result.equals("You Won")){
                 image.setImageResource(R.drawable.win);
             }
-            else if(result.equals("you lose")){
+            else {
                 image.setImageResource(R.drawable.lose);
             }
             text5.setText(result);
+            dialog.setCancelable(false);
+            leave_r.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            restart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(M_game.this, "game restart", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    restart_game();
+                }
+            });
             dialog.show();
-            win = false;
         }
+    }
+
+    void restart_game(){
+        Log.d(TAG, "restart: ");
+        /*firebasefirestore.collection("roomkey").document(roomkey).collection("moves").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (queryDocumentSnapshots != null) {
+                    for(DocumentSnapshot doc:queryDocumentSnapshots.getDocuments()){
+                        doc.getReference().delete();
+                        Log.d(TAG, "onEvent: "+"deleting");
+                    }
+                }
+                // arrays.fill sets all element of the array as value specified bascially it runs a loop over the array
+            }
+        });*/
+        firebasefirestore.collection("roomkey").document(roomkey).collection("moves").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        QuerySnapshot querySnapshot=task.getResult();
+                        for(DocumentSnapshot doc:querySnapshot.getDocuments()){
+                            doc.getReference().delete();
+                            Log.d(TAG, "onComplete: "+"deleting");
+                        }
+                    }
+                });
+    }
+
+    void reset_UI(){
+        Log.d(TAG, "reset_UI: ");
+        o_o.setImageDrawable(null);
+        o_1.setImageDrawable(null);
+        o_2.setImageDrawable(null);
+        f_o.setImageDrawable(null);
+        f_1.setImageDrawable(null);
+        f_2.setImageDrawable(null);
+        s_o.setImageDrawable(null);
+        s_1.setImageDrawable(null);
+        s_2.setImageDrawable(null);
+        win=true;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        firebasefirestore.collection("roomkey").document(roomkey).delete();
     }
+
 }

@@ -9,16 +9,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="20dp">
 
-        <ImageView
-            android:id="@+id/cancel_j"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/cancel"
-            android:textSize="24sp" />
 
         <LinearLayout
             android:id="@+id/l1_j"
@@ -71,6 +64,37 @@
             android:layout_marginTop="10dp"
             android:src="@drawable/win"
             android:layout_below="@id/text5"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/wind_image"
+            android:weightSum="2"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:id="@+id/restart_wd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="Restart"
+                android:layout_marginTop="8dp"
+                android:textColor="#388E3C"
+                android:textSize="19sp"
+                android:fontFamily="@font/baumans"/>
+            <TextView
+                android:id="@+id/leave_wd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="Leave room"
+                android:layout_marginTop="8dp"
+                android:textColor="#D11010"
+                android:textSize="19sp"
+                android:fontFamily="@font/baumans"/>
+        </LinearLayout>
+
 
     </RelativeLayout>
 

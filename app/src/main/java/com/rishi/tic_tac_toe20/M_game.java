@@ -65,6 +65,7 @@ public class M_game extends AppCompatActivity {
         s_1 = findViewById(R.id.s_1);
         s_2 = findViewById(R.id.s_2);
         click_listener();
+        leave_room();
     }
 
     void click_listener() {
@@ -185,6 +186,7 @@ public class M_game extends AppCompatActivity {
                                     update_UI(plya, pos);
                                 }
                                 if(doc.getType()== DocumentChange.Type.REMOVED){
+                                    Log.d(TAG, "onEvent: "+"removed");
                                     dialog.dismiss();
                                     for(int i=0;i<3;++i){
                                         for(int j=0;j<3;++j){
@@ -343,7 +345,7 @@ public class M_game extends AppCompatActivity {
             dialog.setContentView(R.layout.win_dialog);
             TextView text5=dialog.findViewById(R.id.text5);
             ImageView image=dialog.findViewById(R.id.wind_image);
-            final TextView restart=dialog.findViewById(R.id.restart_wd);
+            TextView restart=dialog.findViewById(R.id.restart_wd);
             TextView leave_r=dialog.findViewById(R.id.leave_wd);
             if(result.equals("You Won")){
                 image.setImageResource(R.drawable.win);
@@ -368,24 +370,36 @@ public class M_game extends AppCompatActivity {
                     restart_game();
                 }
             });
+
+            leave_r.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    restart_game();
+                    firebasefirestore.collection("roomkey").document(roomkey).delete();
+                }
+            });
             dialog.show();
         }
     }
 
+    private void leave_room() {
+        firebasefirestore.collection("roomkey").document(roomkey).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                Log.d(TAG, "onEvent: "+"leave room");
+                String user=documentSnapshot.getString("user1");
+                if(user==null){
+                    Toast.makeText(M_game.this, "room disbanded", Toast.LENGTH_LONG).show();
+                    Intent intent=new Intent(M_game.this,Multiplayer.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+    }
+
     void restart_game(){
         Log.d(TAG, "restart: ");
-        /*firebasefirestore.collection("roomkey").document(roomkey).collection("moves").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots != null) {
-                    for(DocumentSnapshot doc:queryDocumentSnapshots.getDocuments()){
-                        doc.getReference().delete();
-                        Log.d(TAG, "onEvent: "+"deleting");
-                    }
-                }
-                // arrays.fill sets all element of the array as value specified bascially it runs a loop over the array
-            }
-        });*/
         firebasefirestore.collection("roomkey").document(roomkey).collection("moves").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -416,6 +430,8 @@ public class M_game extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        firebasefirestore.collection("roomkey").document(roomkey).delete();
     }
+
 
 }
